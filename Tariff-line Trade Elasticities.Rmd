@@ -1,0 +1,220 @@
+---
+title: "Tariff-line Trade Elasticities"
+author: "Afonso Amaral"
+date: "2023-09-04"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Importing the relevant libraries and colour palletes
+```{r Libraries, include = FALSE}
+library(tidyverse)
+library(RColorBrewer)
+library(readxl)
+library(lubridate)
+library(patchwork)
+library(gridExtra)
+library(haven)
+#library(wesanderson)
+
+library(RColorBrewer)
+
+colors_set3 <- brewer.pal(n = 12, name = "Set3")
+```
+
+Set directory to meet data set.
+
+```{r, include = FALSE}
+setwd("/Users/afonso/Library/CloudStorage/Box-Box/Afonso Research/2nd Part/Programing/TradeElasticities/Fontaigne_work")
+```
+
+Opening all data sets.
+
+```{r}
+TradeElasticities <- read_dta("elasticity_for_publication_2021_09_29.dta")
+BACIHS17_2018 <- read.csv2("BACI_HS17_Y2018_V202301.csv", sep=",")
+BACIHS17_2019 <- read.csv2("BACI_HS17_Y2019_V202301.csv", sep=",")
+BACIHS17_2020 <- read.csv2("BACI_HS17_Y2020_V202301.csv", sep=",")
+BACIHS17_2021 <- read.csv2("BACI_HS17_Y2021_V202301.csv", sep=",")
+BACI_CountryCodes <- read.csv2("country_codes_V202301.csv", sep=",")
+BACI_ProductCodes <- read.csv2("product_codes_HS17_V202301.csv", sep=",")
+```
+
+### Tariff-line Product-level Trade Elasticities
+
+The trade elasticities presented in this paper are only given to use per product and not between countries. How were these trade elasticities calculated? How did they, from country-pair calculated an overall trade elasticity?
+
+This work uses BACI data set to calculate tariff-line product-elasticities. That is, how the firms in each 5050 product spaces respond to a change in trade costs (e.g. tariffs, non-tariff barriers). The output of this work is the elasticity of trade at the product-group HS-6 level of granularity. The goal of this document is to understand how the importer-exporter elasticities were calculated and aggregated to the product-level overall elasticity. For that, we will make use of the overall BACI with over 10 million observation accross more than 150 countries.
+
+Before that, here is a summary of the Tariff-Line Product-Level Trade Elasticity database provided by Lionel Fontagné is his most recent work in 2022 (https://sites.google.com/view/product-level-trade-elasticity/home) \
+Their dataset comprises trade elasticities calculated at the **HS-6** 6-digit level of the Harmonized System, that is, the most detailed product-related data available worldwide.
+\
+
+Ultimately, Fontagné and colleagues highlight that "*the considerable trade-elasticity heterogeneity that we have uncovered raises the question of calculating the welfare gains from trade for countries at different level of development, different sectoral domestic shares and expenditure shares*" (Fontagné, 2022). The authors use TiVA (OECD) data to compute both the share of country j‘s total expenditure devoted to domestic production (i.e. λjj in ACR) and country j‘s consumption share in sector s (i.e. ηjs, the upper-tier in consumer utility in ACR). These shares are calculated using trade in value-added. They then compare the ex-ante evaluation of the welfare change for countries with different income level.
+
+##### Questions about this work
+Some questions about this work seem still unanswered. The goal of this replication is precisely to get answers to those questions.\
+
+* How was the clustering analysis performed? Did it rely on HS6 to HS4 or Hs selection clustering? If so, where is that explained?\
+* *Answer*: The HS6 variances are aggregated to the HS-section level as simple averages (*Source: MAcMap-HS6, Fontagné and colleagues' calculations.*)  There are only 21 HS-sections: Live Animals and Animal Products; Vegetable Products; Animal or vegetable fats and oils; Prepared foodstuffs, beverages and tobacco; Mineral products; Products of chemical industries; Plastic and articles thereof; Raw hides and skins, leather and article thereof; Wood/Cork and articles of Wood/Cork; Pulp of wood or other cellulosic materials; Textile and textile articles; Footwear, Headgear, Umbrellas and prepared feathers; Articles of stone, plaster, ceramic and glass; Natural cultured pearls and precious stones and metals; Base metals and articles of base metals; Machinery and mechanical appliances and electrical machinery; Vehicles, Aircraft and transport equipment; Optical, photographic, precision and medical instruments; Arms and ammunitions; Miscellaneous; Works of art \
+* What is the frequency of BACI? If it is monthly, how come we only have one value per import-export country pair per year per product code?
+* *Answer*: This is probably only yearly? How would that affect what we are trying to do? Maybe because we only have yearly world trade data, we cannot calculate the trade elasticity to trade barriers per country. By using COMEXT data instead of BACI dataset, we could witness the changes in imports/exports volume as a response to trade barriers while mantaining the same level of granularity of HS6, 6-digit product codes.
+
+
+
+##### Main contribution to Trade Economics from our work
+In this body of literature, a trade elasticity is seen as the **sensitivity of trade volumes** (imports or exports) to **changes in prices**, that is, trade costs triggered by trade policies (or barriers). In 2022, Fontagné and colleagues calculated trade elasticities at the HS6 code level of granularity which was further used to calculate overall trade elasticities per sectors (by clustering the 5000 trade elasticities of the HS6 codes in their HS section). That **assumes that firms in similar product spaces have similar sensibilities to changes in trade costs**. The trade elasticity calculation is done only across the different products but not across different countries. In this work, **we add the country-dimension when calculating trade elasticities** to changes in trade policy (that is, trade costs).  We highlight the importance of the variability of trade elasticities within each product space across countries. 
+\
+\
+
+
+#### BACI data set
+BACI relies on data from the United Nations Statistical Division (Comtrade dataset). Import values are reported CIF (cost, insurance and freight) while exports are reported FOB (free on board). Adding to this, the reliability of each country as a reporter of trade data is assessed. If a reporter tends to provide data that are very different from the ones of its partners, it will be considered as unreliable and will be assigned a lower weight in the determination of the reconciled trade flow value.
+There are six variables in BACII:\
+**k.** Product category (HS 6-digit code);\
+**i.** Exporter (ISO 3-digit country code);\
+**j.** Importer (ISO 3-digit country code);\
+**v.** Value of the trade flow (in thousands current USD);\
+**q.** Quantity (in metric tons) \
+
+Three advantages of using this dataset according to Fontagné and colleagues (Fontagné, 2022). First, BACI fills empty cells in the World trade matrix using mirror trade flows. Second, BACI reconciles reported values between exporter i and importer j in a given product category k and year t pair: we can use either exports Xi,j,k,t or imports Mj,i,k,t as the figures are identical. Third, and most importantly, BACI provides import values net of transport costs (hence FOB).
+
+##### Replicating the analysis with our focus
+The goal of this analysis is to understand the change in imports of COVID-19-relevant products from EU main trade partners - China, United Kingdom, United States. We are now going to create data frames with the filters we want to apply to the BACI dataset.\
+First, we need to constrain our analysis to the countries we are going to be tracking:\
+
+```{r, include = FALSE}
+EU_MainPartners <- BACI_CountryCodes[str_detect(BACI_CountryCodes$iso_2digit_alpha, "US|GB|CN"), ]
+#We also need to keep in the background the "country-code" of Europe
+EU_Main <- BACI_CountryCodes[str_detect(BACI_CountryCodes$country_code, "697"), ]
+```
+
+| Country | 2-digit | Country code |
+|:------|:-----:|:-------:|
+| United States     | US    | 842   |
+| Uniter Kingdom     | UK    | 826   |
+| China     | CH    | 156   |
+
+
+Now it is necessary to filter the whole BACI database to get only the exports of CH, US, and UK. 
+```{r}
+EU_MainPartners_BACI_2020 <- BACIHS17_2020[str_detect(BACIHS17_2020$i, "842|826|156"), ]
+```
+
+Next, we need to assemble the correct HS6 codes for COVID-19 relevant products\
+(For a discussion on why these products and not others, please contact the main researcher: asoaresb@andrew.cmu.edu)\
+```{r, include = FALSE}
+product_list <- c("Masks and Respirators", "Garments", "Gloves", "Face Shields", "Goggles", "Hospital Gowns", "Hairnets", "Mechanical Ventilators")
+
+HS6_list <- c("630790","621010", "392690", "392620" , "900490", "481850", "650500", "901920")
+
+product_HS6 <- data.frame(Product_Codes = product_list, HS_Codes = HS6_list)
+
+#Another way to program it
+#EU_MainPartners_BACI %>% 
+  #filter(k %in% HS6_list) %>% 
+  #mutate(HS_Codes = as.character(k)) %>% 
+  #select(HS_Codes) %>%
+  #left_join(product_HS6) %>% 
+  #distinct()
+
+```
+
+| Products | HS-6 code |
+|:------|:------:|
+| Masks and Respirators | 630790 |
+| Garnments | 621010 |
+| Gloves | 392620 |
+| Faceshield | 392690 |
+| Googles | 900490 |
+| Hospital Gowns | 481850 |
+| Hairnets | 650500 |
+| Ventilators | 901920 |
+
+And apply that filter to narrow the scope of our analysis to COVID-19 relevant products:\
+```{r}
+EU_MainPartners_BACI_COVID_2020 <- EU_MainPartners_BACI_2020 %>% filter(k %in% HS6_list)
+```
+
+
+```{r}
+#We need to create another document and perform the products analysis like Erica wanted. Which ones we want to keep or we don't want to keep. 
+```
+
+Lets select only countries within the European Union
+```{r}
+EU_Countries <- c("Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden")
+EU_Country_codes_only <- c("40", "56", "100", "191", "196", "203", "208", "233", "246", "251", "276", "300", "348", "372", "380", "428", "440", "442", "470", "528", "616", "620", "642", "703", "705", "724", "752")
+
+EU_Country_codes <- data.frame(Countries = EU_Countries, Codes = EU_Country_codes_only)
+
+#Lets create a function to find the codes or countries and vice versa:
+
+get_country_or_code <- function(input) {
+  # Check if the input is a country name
+  if (input %in% EU_Country_codes$Countries) {
+    return(EU_Country_codes$Codes[EU_Country_codes$Countries == input])
+  }
+  # Check if the input is a country code
+  else if (input %in% EU_Country_codes$Codes) {
+    return(EU_Country_codes$Countries[EU_Country_codes$Codes == input])
+  }
+  # If the input doesn't match any country name or code
+  else {
+    return("Invalid input")
+  }
+}
+
+#Test
+print(get_country_or_code("56"))
+
+```
+
+With this filter created, we then apply it to the Baci sub-set of EU main trade partners. We will create a smaller subset with the imports and exports between the EU main trade partners and the EU countries. We can then add all values and get EU-wide imports and exports (value and units).
+
+```{r}
+Trade_EU_MainPartners_BACI_COVID_2020 <- EU_MainPartners_BACI_COVID_2020 %>% 
+  filter(j %in% EU_Country_codes_only)
+```
+
+It seems that the authors are calculating yearly trade elasticities rather than monthly. --> what are the implications of what I am doing?
+
+Regardless, with the current sub-set of the BACIHS17 dataset for year 2020, we have the exports of China, US, and UK, to each EU nation separately. However, these values are only done for year 2020. A similar exercise needs to be done across the other years of BACI to see a change in exports to EU after COVID-19 pandemic.  
+Bellow, is that exact code.
+
+```{r}
+EU_MainPartners_BACI_2018 <- BACIHS17_2018[str_detect(BACIHS17_2018$i, "842|826|156"), ]
+EU_MainPartners_BACI_2019 <- BACIHS17_2019[str_detect(BACIHS17_2019$i, "842|826|156"), ]
+EU_MainPartners_BACI_2021 <- BACIHS17_2021[str_detect(BACIHS17_2021$i, "842|826|156"), ]
+
+EU_MainPartners_BACI_COVID_2018 <- EU_MainPartners_BACI_2018 %>% filter(k %in% HS6_list)
+EU_MainPartners_BACI_COVID_2019 <- EU_MainPartners_BACI_2019 %>% filter(k %in% HS6_list)
+EU_MainPartners_BACI_COVID_2021 <- EU_MainPartners_BACI_2021 %>% filter(k %in% HS6_list)
+
+Trade_EU_MainPartners_BACI_COVID_2018 <- EU_MainPartners_BACI_COVID_2018 %>% filter(j %in% EU_Country_codes_only)
+Trade_EU_MainPartners_BACI_COVID_2019 <- EU_MainPartners_BACI_COVID_2019 %>% filter(j %in% EU_Country_codes_only)
+Trade_EU_MainPartners_BACI_COVID_2021 <- EU_MainPartners_BACI_COVID_2021 %>% filter(j %in% EU_Country_codes_only)
+
+Trade_EU_MainPartners_BACI_COVID <- rbind(Trade_EU_MainPartners_BACI_COVID_2018, Trade_EU_MainPartners_BACI_COVID_2019, Trade_EU_MainPartners_BACI_COVID_2020, Trade_EU_MainPartners_BACI_COVID_2021)
+
+#Finally, we get the trade between each main partner with all countries of the EU between 2018 and 2021.
+Trade_EU_MainPartners_BACI_COVID_CN <- Trade_EU_MainPartners_BACI_COVID[str_detect(Trade_EU_MainPartners_BACI_COVID$i, "156"), ]
+Trade_EU_MainPartners_BACI_COVID_US <- Trade_EU_MainPartners_BACI_COVID[str_detect(Trade_EU_MainPartners_BACI_COVID$i, "842"), ]
+Trade_EU_MainPartners_BACI_COVID_UK <- Trade_EU_MainPartners_BACI_COVID[str_detect(Trade_EU_MainPartners_BACI_COVID$i, "826"), ]
+
+saveRDS(Trade_EU_MainPartners_BACI_COVID, "/Users/afonso/Library/CloudStorage/Box-Box/Afonso Research/2nd Part/Programing/TradeElasticities/Fontaigne_work.rds")
+```
+
+
+
+
+
+```
+
+
