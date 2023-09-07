@@ -2,7 +2,9 @@
 title: "Data_Visualitation_TradeElasticities"
 author: "Afonso Amaral"
 date: "2023-09-05"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -11,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The input of this document is the output from the cleaned BACI dataset fitted to our purposes. The sub-dataset contemplating all of the imports arising from China, United States and United Kingdom we examine the change over time of trade from China, UK, and US, to the European Member-States yearly.
 
-Importing the relevant libraries and colour palletes
+Importing the relevant libraries and colour palletes.
 ```{r Libraries, include = FALSE}
 library(tidyverse)
 library(RColorBrewer)
@@ -25,6 +27,9 @@ library(haven)
 library(RColorBrewer)
 
 colors_set3 <- brewer.pal(n = 12, name = "Set3")
+
+#If necessary, here is the code to output a PDF using the library: Tinytex
+#tinytex::install_tinytex()
 ```
 
 Set directory to meet data set.
@@ -33,10 +38,10 @@ Set directory to meet data set.
 setwd("/Users/afonso/Library/CloudStorage/Box-Box/Afonso Research/2nd Part/Programing/TradeElasticities/Fontaigne_work")
 ```
 
-Importing data from previous data cleaning part of the project. File "Tariff-line Trade Elasticities.Rmd"
+Importing data from previous data cleaning part of the project. File "Tariff-line Trade Elasticities.Rmd".
 
 ```{r, include = FALSE}
-Trade_EU_MainPartners_BACI_COVID <- readRDS("/Users/afonso/Library/CloudStorage/Box-Box/Afonso Research/2nd Part/Programing/TradeElasticities/Fontaigne_work.rds")
+Trade_EU_MainPartners_BACI_COVID <- readRDS("/Users/afonso/Library/CloudStorage/Box-Box/Afonso Research/2nd Part/Programing/TradeElasticities/Fontaigne_work/Data_Cleaning_Trade_COVID.rds")
 
 #Separating between US, UK, CN
 Trade_EU_MainPartners_BACI_COVID_CN <- Trade_EU_MainPartners_BACI_COVID[str_detect(Trade_EU_MainPartners_BACI_COVID$i, "156"), ]
@@ -44,8 +49,8 @@ Trade_EU_MainPartners_BACI_COVID_US <- Trade_EU_MainPartners_BACI_COVID[str_dete
 Trade_EU_MainPartners_BACI_COVID_UK <- Trade_EU_MainPartners_BACI_COVID[str_detect(Trade_EU_MainPartners_BACI_COVID$i, "826"), ]
 ```
 
-Making sure we are tracking the EU countries
-```{r, include = FALSE}
+Making sure we are tracking the EU countries.
+```{r}
 EU_Countries <- c("Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden")
 EU_Country_codes_only <- c("40", "56", "100", "191", "196", "203", "208", "233", "246", "251", "276", "300", "348", "372", "380", "428", "440", "442", "470", "528", "616", "620", "642", "703", "705", "724", "752")
 
@@ -305,7 +310,7 @@ Trade_EU_MainPartners_BACI_COVID_US_HR_val + Trade_EU_MainPartners_BACI_COVID_US
 #Cyprus
 Trade_EU_MainPartners_BACI_COVID_US_CY_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Cyprus")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Cyprus"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_CY_q <- Trade_EU_MainPartners_BACI_COVID_CN %>% filter(j %in% get_country_or_code("Cyprus")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Cyprus"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_US_CY_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Cyprus")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Cyprus"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
 Trade_EU_MainPartners_BACI_COVID_US_CY_val + Trade_EU_MainPartners_BACI_COVID_US_CY_q
 
@@ -488,178 +493,192 @@ Trade_EU_MainPartners_BACI_COVID_UK_BE_q <- Trade_EU_MainPartners_BACI_COVID_US 
 Trade_EU_MainPartners_BACI_COVID_UK_BE_val + Trade_EU_MainPartners_BACI_COVID_UK_BE_q
 
 #Bulgaria
-Trade_EU_MainPartners_BACI_COVID_US_BG_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Bulgaria")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Bulgaria"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_BG_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Bulgaria")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Bulgaria"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_BG_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Bulgaria")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Bulgaria"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_BG_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Bulgaria")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Bulgaria"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_BG_val + Trade_EU_MainPartners_BACI_COVID_US_BG_q
+Trade_EU_MainPartners_BACI_COVID_UK_BG_val + Trade_EU_MainPartners_BACI_COVID_UK_BG_q
 
 #Croatia
-Trade_EU_MainPartners_BACI_COVID_US_HR_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Croatia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Croatia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_HR_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Croatia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Croatia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_HR_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Croatia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Croatia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_HR_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Croatia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Croatia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_HR_val + Trade_EU_MainPartners_BACI_COVID_US_HR_q
+Trade_EU_MainPartners_BACI_COVID_UK_HR_val + Trade_EU_MainPartners_BACI_COVID_UK_HR_q
 
 #Cyprus
-Trade_EU_MainPartners_BACI_COVID_US_CY_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Cyprus")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Cyprus"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_CY_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Cyprus")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Cyprus"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_CY_q <- Trade_EU_MainPartners_BACI_COVID_CN %>% filter(j %in% get_country_or_code("Cyprus")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Cyprus"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_CY_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Cyprus")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Cyprus"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_CY_val + Trade_EU_MainPartners_BACI_COVID_US_CY_q
+Trade_EU_MainPartners_BACI_COVID_UK_CY_val + Trade_EU_MainPartners_BACI_COVID_UK_CY_q
 
 #Czechia
-Trade_EU_MainPartners_BACI_COVID_US_CZ_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Czechia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Czechia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_CZ_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Czechia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Czechia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_CZ_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Belgium")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Czechia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_CZ_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Belgium")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Czechia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_CZ_val + Trade_EU_MainPartners_BACI_COVID_US_CZ_q
+Trade_EU_MainPartners_BACI_COVID_UK_CZ_val + Trade_EU_MainPartners_BACI_COVID_UK_CZ_q
 
 #Denmark
-Trade_EU_MainPartners_BACI_COVID_US_DK_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Denmark")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Denmark"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_DK_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Denmark")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Denmark"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_DK_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Denmark")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Denmark"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_DK_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Denmark")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Denmark"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_DK_val + Trade_EU_MainPartners_BACI_COVID_US_DK_q
+Trade_EU_MainPartners_BACI_COVID_UK_DK_val + Trade_EU_MainPartners_BACI_COVID_UK_DK_q
 
 #Estonia
-Trade_EU_MainPartners_BACI_COVID_US_EE_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Estonia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Estonia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_EE_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Estonia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Estonia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_EE_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Estonia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Estonia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_EE_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Estonia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Estonia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_EE_val + Trade_EU_MainPartners_BACI_COVID_US_EE_q
+Trade_EU_MainPartners_BACI_COVID_UK_EE_val + Trade_EU_MainPartners_BACI_COVID_UK_EE_q
 
 #Finland
-Trade_EU_MainPartners_BACI_COVID_US_FL_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Finland")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Finland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_FL_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Finland")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Finland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_FL_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Finland")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Finland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_FL_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Finland")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Finland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_FL_val + Trade_EU_MainPartners_BACI_COVID_US_FL_q
+Trade_EU_MainPartners_BACI_COVID_UK_FL_val + Trade_EU_MainPartners_BACI_COVID_UK_FL_q
 
 #France
-Trade_EU_MainPartners_BACI_COVID_US_FR_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("France")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to France"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_FR_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("France")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to France"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_FR_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("France")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to France"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_FR_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("France")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to France"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_FR_val + Trade_EU_MainPartners_BACI_COVID_US_FR_q
+Trade_EU_MainPartners_BACI_COVID_UK_FR_val + Trade_EU_MainPartners_BACI_COVID_UK_FR_q
 
 #Germany
-Trade_EU_MainPartners_BACI_COVID_US_DE_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Germany")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Germany"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_DE_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Germany")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Germany"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_DE_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Germany")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Germany"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_DE_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Germany")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Germany"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_DE_val + Trade_EU_MainPartners_BACI_COVID_US_DE_q
+Trade_EU_MainPartners_BACI_COVID_UK_DE_val + Trade_EU_MainPartners_BACI_COVID_UK_DE_q
 
 #Greece
-Trade_EU_MainPartners_BACI_COVID_US_GR_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Greece")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Greece"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_GR_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Greece")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Greece"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_GR_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Greece")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Greece"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_GR_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Greece")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Greece"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_GR_val + Trade_EU_MainPartners_BACI_COVID_US_GR_q
+Trade_EU_MainPartners_BACI_COVID_UK_GR_val + Trade_EU_MainPartners_BACI_COVID_UK_GR_q
 
 #Hungary
-Trade_EU_MainPartners_BACI_COVID_US_HU_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Hungary")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Hungary"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_HU_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Hungary")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Hungary"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_HU_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Hungary")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Hungary"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_US_HU_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Hungary")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Hungary"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
 Trade_EU_MainPartners_BACI_COVID_US_HU_val + Trade_EU_MainPartners_BACI_COVID_US_HU_q
 
 #Ireland
-Trade_EU_MainPartners_BACI_COVID_US_IE_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Ireland")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Ireland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_IE_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Ireland")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Ireland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_IE_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Ireland")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Ireland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_IE_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Ireland")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Ireland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_IE_val + Trade_EU_MainPartners_BACI_COVID_US_IE_q
+Trade_EU_MainPartners_BACI_COVID_UK_IE_val + Trade_EU_MainPartners_BACI_COVID_UK_IE_q
 
 #Italy
-Trade_EU_MainPartners_BACI_COVID_US_IT_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Italy")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Italy"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_IT_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Italy")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Italy"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_IT_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Italy")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Italy"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_IT_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Italy")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Italy"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_IT_val + Trade_EU_MainPartners_BACI_COVID_US_IT_q
+Trade_EU_MainPartners_BACI_COVID_UK_IT_val + Trade_EU_MainPartners_BACI_COVID_UK_IT_q
 
 #Latvia
-Trade_EU_MainPartners_BACI_COVID_US_LV_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Latvia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Latvia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_LV_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Latvia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Latvia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_LV_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Latvia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Latvia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_LV_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Latvia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Latvia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_LV_val + Trade_EU_MainPartners_BACI_COVID_US_LV_q
+Trade_EU_MainPartners_BACI_COVID_UK_LV_val + Trade_EU_MainPartners_BACI_COVID_UK_LV_q
 
 #Lithuania
-Trade_EU_MainPartners_BACI_COVID_US_LT_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Lithuania")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Lithuania"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_LT_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Lithuania")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Lithuania"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_LT_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Lithuania")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Lithuania"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_LT_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Lithuania")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Lithuania"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_LT_val + Trade_EU_MainPartners_BACI_COVID_US_LT_q
+Trade_EU_MainPartners_BACI_COVID_UK_LT_val + Trade_EU_MainPartners_BACI_COVID_UK_LT_q
 
 #Luxembourg
-Trade_EU_MainPartners_BACI_COVID_US_LU_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Luxembourg")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Luxembourg"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_LU_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Luxembourg")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Luxembourg"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_LU_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Luxembourg")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Luxembourg"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_LU_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Luxembourg")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Luxembourg"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_LU_val + Trade_EU_MainPartners_BACI_COVID_US_LU_q
+Trade_EU_MainPartners_BACI_COVID_UK_LU_val + Trade_EU_MainPartners_BACI_COVID_UK_LU_q
 
 #Malta
-Trade_EU_MainPartners_BACI_COVID_US_MT_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Malta")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Malta"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_MT_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Malta")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Malta"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_MT_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Malta")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Malta"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_MT_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Malta")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Malta"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_MT_val + Trade_EU_MainPartners_BACI_COVID_US_MT_q
+Trade_EU_MainPartners_BACI_COVID_UK_MT_val + Trade_EU_MainPartners_BACI_COVID_UK_MT_q
 
 #Netherlands
-Trade_EU_MainPartners_BACI_COVID_US_NE_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Netherlands")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Netherlands"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_NE_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Netherlands")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Netherlands"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_NE_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Netherlands")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Netherlands"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_NE_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Netherlands")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Netherlands"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_NE_val + Trade_EU_MainPartners_BACI_COVID_US_NE_q
+Trade_EU_MainPartners_BACI_COVID_UK_NE_val + Trade_EU_MainPartners_BACI_COVID_UK_NE_q
 
 #Poland
-Trade_EU_MainPartners_BACI_COVID_US_PL_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Poland")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Poland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_PL_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Poland")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Poland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_PL_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Poland")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Poland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_PL_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Poland")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Poland"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_PL_val + Trade_EU_MainPartners_BACI_COVID_US_PL_q
+Trade_EU_MainPartners_BACI_COVID_UK_PL_val + Trade_EU_MainPartners_BACI_COVID_UK_PL_q
 
 #Portugal
-Trade_EU_MainPartners_BACI_COVID_US_PT_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Portugal")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Portugal"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_PT_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Portugal")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Portugal"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_PT_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Portugal")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Portugal"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_PT_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Portugal")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Portugal"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_PT_val + Trade_EU_MainPartners_BACI_COVID_US_PT_q
+Trade_EU_MainPartners_BACI_COVID_UK_PT_val + Trade_EU_MainPartners_BACI_COVID_UK_PT_q
 
 #Romania
-Trade_EU_MainPartners_BACI_COVID_US_RO_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Romania")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Romania"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_RO_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Romania")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Romania"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_RO_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Romania")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Romania"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_RO_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Romania")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Romania"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_RO_val + Trade_EU_MainPartners_BACI_COVID_US_RO_q
+Trade_EU_MainPartners_BACI_COVID_UK_RO_val + Trade_EU_MainPartners_BACI_COVID_UK_RO_q
 
 #Slovakia
-Trade_EU_MainPartners_BACI_COVID_US_SK_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Slovakia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Slovakia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_SK_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Slovakia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Slovakia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_SK_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Slovakia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Slovakia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_SK_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Slovakia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Slovakia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_SK_val + Trade_EU_MainPartners_BACI_COVID_US_SK_q
+Trade_EU_MainPartners_BACI_COVID_UK_SK_val + Trade_EU_MainPartners_BACI_COVID_UK_SK_q
 
 #Slovenia
-Trade_EU_MainPartners_BACI_COVID_US_SL_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Slovenia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Slovenia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_SL_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Slovenia")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Slovenia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_SL_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Slovenia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Slovenia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_SL_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Slovenia")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Slovenia"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_SL_val + Trade_EU_MainPartners_BACI_COVID_US_SL_q
+Trade_EU_MainPartners_BACI_COVID_UK_SL_val + Trade_EU_MainPartners_BACI_COVID_UK_SL_q
 
 #Spain
-Trade_EU_MainPartners_BACI_COVID_US_ES_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Spain")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Spain"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_ES_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Spain")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Spain"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_ES_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Spain")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Spain"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_ES_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Spain")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Spain"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_ES_val + Trade_EU_MainPartners_BACI_COVID_US_ES_q
+Trade_EU_MainPartners_BACI_COVID_UK_ES_val + Trade_EU_MainPartners_BACI_COVID_UK_ES_q
 
 #Sweden
-Trade_EU_MainPartners_BACI_COVID_US_SE_val <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Sweden")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from US to Sweden"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_SE_val <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Sweden")) %>% ggplot() + geom_line(aes(x = t, y = v, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Value(€) of COVID-19 relevant products from UK to Sweden"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_SE_q <- Trade_EU_MainPartners_BACI_COVID_US %>% filter(j %in% get_country_or_code("Sweden")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from US to Sweden"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
+Trade_EU_MainPartners_BACI_COVID_UK_SE_q <- Trade_EU_MainPartners_BACI_COVID_UK %>% filter(j %in% get_country_or_code("Sweden")) %>% ggplot() + geom_line(aes(x = t, y = q, group = k, color = k), linewidth = 1.1) + labs(title = paste("Imports Quantity (100Kg) of COVID-19 relevant products from UK to Sweden"), sep = " ") + guides(color = "none") + theme_bw() + scale_color_brewer(palette = "Set3")
 
-Trade_EU_MainPartners_BACI_COVID_US_SE_val + Trade_EU_MainPartners_BACI_COVID_US_SE_q
+Trade_EU_MainPartners_BACI_COVID_UK_SE_val + Trade_EU_MainPartners_BACI_COVID_UK_SE_q
 
 ```
+
+
+After looking at these analysis per country per EU main trade partners, we should look into the different unit price payed by each country to China, US, and UK. And try to cluster it through either manufacturing capabilities or size of country. To be done:\
+
+* Integrate all COVID-19 related products at the HS6 level. (In another document)
+* Unit cost analysis per country (In this document);\
+* Difference in increase of quantity imported. That is, how much each country relied on international trade to fulfill their internal demand;\
+* Compare that with the internal production of Europe for each of these products (In a future document);\
+
+
+
+
+
+
